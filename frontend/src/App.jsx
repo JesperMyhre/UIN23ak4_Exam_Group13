@@ -1,35 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+const url =
+  "https://moviesdatabase.p.rapidapi.com/titles/search/title/%7Btitle%7D?exact=true&titleType=movie";
+const options = {
+  method: "GET",
+  headers: {
+    "X-RapidAPI-Key": "9bc8085aa8msh993744cc96d23a2p16fabajsn08b818614d14",
+    "X-RapidAPI-Host": "moviesdatabase.p.rapidapi.com",
+  },
+};
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more 
-      </p>
-    </>
-  )
+try {
+  const response = await fetch(url, options);
+  const result = await response.text();
+  console.log(result);
+} catch (error) {
+  console.error(error);
 }
 
-export default App
+function App() {
+  const [content, setContent] = useState([]);
+  const [query, setQuery] = useState("Abraham Lincoln vampire slayer");
+
+  const getData = async () => {
+    try {
+      const response = await fetch(
+        `https://moviesdatabase.p.rapidapi.com/titles/search/title/${query}?exact=true&titleType=movie`
+      );
+      const data = await response.json();
+      setContent(data);
+      console.log(content);
+    } catch {
+      console.error("Det har skjedd en feil");
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  return <></>;
+}
+
+export default App;
